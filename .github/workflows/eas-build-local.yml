@@ -1,0 +1,41 @@
+name: Build Android Local via EAS
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: ☕ Setup Java SDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Prevents Gradle from exceeding GitHub's 7GB RAM limit
+      - name: 🔧 Configure Gradle Memory Limits
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m" >> ~/.gradle/gradle.properties
+
+      - name: 📦 Install EAS CLI
+        run: npm install -g eas-cli
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🚀 Build Android App Locally
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: eas build --platform android --profile preview --local --non-interactive
