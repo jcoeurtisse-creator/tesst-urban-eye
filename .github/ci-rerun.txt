@@ -1,0 +1,5 @@
+Trigger CI rerun after fixing patch file
+
+This file was added by GitHub Copilot to force a CI rerun after correcting the onnxruntime-react-native patch file.
+
+Timestamp: 2026-07-14T16:44:00Z
