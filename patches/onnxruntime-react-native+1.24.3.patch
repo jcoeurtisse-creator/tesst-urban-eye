@@ -1,7 +1,10 @@
 *** Begin Patch
 *** Update File: node_modules/onnxruntime-react-native/android/build.gradle
 @@
--  if (VersionNumber.parse(REACT_NATIVE_VERSION) < VersionNumber.parse("0.71")) {
+-  def reactNativeVersionParts = REACT_NATIVE_VERSION.split("\\.")
+-  def reactNativeMajor = reactNativeVersionParts[0].toInteger()
+-  def reactNativeMinor = reactNativeVersionParts[1].toInteger()
+-  if (reactNativeMajor == 0 && reactNativeMinor < 71) {
 -    extractLibs "com.facebook.fbjni:fbjni:+:headers"
 -    extractLibs "com.facebook.fbjni:fbjni:+"
 -  }
