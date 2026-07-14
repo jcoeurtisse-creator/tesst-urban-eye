@@ -1,5 +1,5 @@
---- a/node_modules/onnxruntime-react-native/android/build.gradle
-+++ b/node_modules/onnxruntime-react-native/android/build.gradle
+--- a/android/build.gradle
++++ b/android/build.gradle
 @@ -1,7 +1,13 @@
 -  if (VersionNumber.parse(REACT_NATIVE_VERSION) < VersionNumber.parse("0.71")) {
 -    extractLibs "com.facebook.fbjni:fbjni:+:headers"
