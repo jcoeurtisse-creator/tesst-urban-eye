@@ -3,16 +3,18 @@ name: Build Android Local via EAS
 on:
   workflow_dispatch:
 
+  pull_request:
+    branches:
+      - main
+
   push:
     branches:
       - main
 
-  pull_request:
-    branches:
-      - main
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
@@ -21,27 +23,47 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
 
       - name: ☕ Setup Java SDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: zulu
+          java-version: "17"
 
-      # Prevents Gradle from exceeding GitHub's 7GB RAM limit
+      # Prevent Gradle from using too much memory
       - name: 🔧 Configure Gradle Memory Limits
         run: |
           mkdir -p ~/.gradle
-          echo "org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m" >> ~/.gradle/gradle.properties
+          cat <<EOF >> ~/.gradle/gradle.properties
+          org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m
+          EOF
 
       - name: 📦 Install EAS CLI
         run: npm install -g eas-cli
 
+      - name: 🧹 Clear npm cache
+        run: |
+          npm cache clean --force
+          rm -rf ~/.npm
+
+      - name: 🌐 Configure npm
+        run: |
+          npm config set registry https://registry.npmjs.org/
+          npm config set fetch-retries 5
+          npm config set fetch-retry-factor 2
+          npm config set fetch-retry-mintimeout 10000
+          npm config set fetch-retry-maxtimeout 120000
+
       - name: 📦 Install dependencies
-        run: npm ci
+        run: |
+          npm ci --prefer-online --no-audit --cache /tmp/npm-cache
+
+      - name: 🧪 Prebuild Android
+        run: |
+          npx expo prebuild --platform android --no-install
 
       - name: 🚀 Build Android App Locally
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: eas build --platform android --profile preview --local --non-interactive
+        run: |
+          eas build --platform android --profile preview --local --non-interactive
