@@ -15,7 +15,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: ☕ Setup Java SDK
         uses: actions/setup-java@v4
@@ -36,7 +35,10 @@ jobs:
         run: npm cache clean --force
 
       - name: 📦 Install dependencies
-        run: npm ci --prefer-online
+        run: |
+          npm config set registry https://registry.npmjs.org/
+          npm cache clean --force
+          npm ci --prefer-online --cache /tmp/npm-cache
 
       - name: 🧪 Prebuild Android (quick check)
         run: |
