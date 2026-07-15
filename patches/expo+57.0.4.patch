@@ -1,0 +1,13 @@
+diff --git a/node_modules/expo/android/build.gradle b/node_modules/expo/android/build.gradle
+index 1111111..2222222 100644
+--- a/node_modules/expo/android/build.gradle
++++ b/node_modules/expo/android/build.gradle
+@@ -14,7 +14,7 @@
+ 
+ expoModule {
+   // We can't prebuild the module because it depends on the generated files.
+-  canBePublished false
++  canBePublished = false
+ }
+ 
+ android {

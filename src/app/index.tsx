@@ -8,6 +8,8 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Link } from 'expo-router';
+import { Pressable, Text } from 'react-native';
 
 function getDevMenuHint() {
   if (Platform.OS === 'web') {
@@ -56,6 +58,11 @@ export default function HomeScreen() {
         </ThemedView>
 
         {Platform.OS === 'web' && <WebBadge />}
+        <Pressable style={styles.cameraButton}>
+          <Link href="/camera">
+            <Text style={styles.cameraButtonText}>Ouvrir la caméra</Text>
+          </Link>
+        </Pressable>
       </SafeAreaView>
     </ThemedView>
   );
@@ -94,5 +101,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.four,
     borderRadius: Spacing.four,
+  },
+  cameraButton: {
+    marginTop: Spacing.three,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    backgroundColor: '#0a84ff',
+    borderRadius: 10,
+  },
+  cameraButtonText: {
+    color: 'white',
+    fontWeight: '600',
   },
 });
