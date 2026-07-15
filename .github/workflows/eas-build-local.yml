@@ -37,6 +37,7 @@ jobs:
           mkdir -p ~/.gradle
           cat <<EOF >> ~/.gradle/gradle.properties
           org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m
+          org.gradle.workers.max=2
           EOF
 
       - name: 📦 Install EAS CLI
@@ -65,5 +66,7 @@ jobs:
       - name: 🚀 Build Android App Locally
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          ANDROID_HOME: /usr/local/lib/android/sdk
+          JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
         run: |
           eas build --platform android --profile preview --local --non-interactive
