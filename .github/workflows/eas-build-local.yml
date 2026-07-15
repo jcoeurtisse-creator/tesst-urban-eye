@@ -50,18 +50,18 @@ jobs:
       - name: 🌐 Configure npm for resilience
         run: |
           npm config set registry https://registry.npmjs.org/
-          npm config set fetch-retries 10
+          npm config set cache /tmp/npm-cache
+          npm config set fetch-retries 20
           npm config set fetch-retry-factor 2
           npm config set fetch-retry-mintimeout 20000
-          npm config set fetch-retry-maxtimeout 180000
+          npm config set fetch-retry-maxtimeout 240000
+          npm config set network-concurrency 1
           npm config set strict-ssl true
-          echo "npm configuration updated"
 
       - name: 📦 Install dependencies
         run: |
-          npm ci --legacy-peer-deps --prefer-online --no-audit --no-fund
-        env:
-          npm_config_loglevel: verbose
+          npm ci --legacy-peer-deps --prefer-online --no-audit --no-fund || npm install --legacy-peer-deps --prefer-online --no-audit --no-fund
+
 
       - name: 🧪 Prebuild Android
         run: |
