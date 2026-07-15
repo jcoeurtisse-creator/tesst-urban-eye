@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: ☕ Setup Java SDK
         uses: actions/setup-java@v4
@@ -40,11 +40,22 @@ jobs:
           EOF
 
       - name: 📦 Install EAS CLI
-        run: yarn global add eas-cli
+        run: npm install -g eas-cli
 
-      - name: 📦 Install dependencies with Yarn
+      - name: 🧹 Clear npm cache and configure resilience
         run: |
-          yarn install --mode=skip-build
+          npm cache clean --force
+          npm config set registry https://registry.npmjs.org/
+          npm config set fetch-retries 5
+          npm config set fetch-retry-factor 2
+          npm config set fetch-retry-mintimeout 10000
+          npm config set fetch-retry-maxtimeout 120000
+          npm config set maxsockets 1
+          npm config set strict-ssl true
+
+      - name: 📦 Install dependencies
+        run: |
+          npm install --force --legacy-peer-deps --no-audit --no-fund
 
 
       - name: 🧪 Prebuild Android
