@@ -44,11 +44,12 @@ jobs:
       - name: 🧹 Clear npm cache
         run: |
           npm cache clean --force
-          rm -rf ~/.npm
+          rm -rf ~/.npm /tmp/npm-cache
 
       - name: 🌐 Configure npm
         run: |
           npm config set registry https://registry.npmjs.org/
+          npm config set cache /tmp/npm-cache
           npm config set fetch-retries 5
           npm config set fetch-retry-factor 2
           npm config set fetch-retry-mintimeout 10000
