@@ -32,8 +32,19 @@ jobs:
       - name: 📦 Install EAS CLI
         run: npm install -g eas-cli
 
+      - name: 🧹 Clean npm cache
+        run: npm cache clean --force
+
       - name: 📦 Install dependencies
-        run: npm ci
+        run: npm ci --prefer-online
+
+      - name: 🧪 Prebuild Android (quick check)
+        run: |
+          npx expo prebuild --platform android --no-install || true
+          if [ -d android ]; then
+            cd android
+            ./gradlew assembleRelease --warning-mode=all --no-daemon -Dorg.gradle.jvmargs="-Xmx1536m -XX:MaxMetaspaceSize=512m" || true
+          fi
 
       - name: 🚀 Build Android App Locally
         env:
