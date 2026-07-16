@@ -63,6 +63,18 @@ jobs:
         run: |
           npx expo prebuild --platform android --no-install
 
+      # AJOUTE CETTE ÉTAPE POUR LA RAM DE GRADLE
+      - name: Configure Gradle Memory Limits
+        run: |
+          mkdir -p ~/.gradle
+          cat <<EOF >> ~/.gradle/gradle.properties
+          org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m
+          org.gradle.workers.max=4
+          org.gradle.daemon=false
+          org.gradle.parallel=true
+          org.gradle.caching=true
+          EOF
+
       - name: 🚀 Build Android App Locally
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
