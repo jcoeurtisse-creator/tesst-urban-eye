@@ -11,6 +11,16 @@ if (!fs.existsSync(filePath)) {
 
 let content = fs.readFileSync(filePath, 'utf8');
 
+// Assure l'import de VersionNumber pour les versions récentes de Gradle
+if (!content.includes('import org.gradle.util.VersionNumber')) {
+  // Insère l'import juste avant le premier bloc 'buildscript' s'il existe, sinon au début
+  if (content.match(/\n\s*buildscript\s*\{/)) {
+    content = content.replace(/(\n)\s*buildscript\s*\{/, "$1import org.gradle.util.VersionNumber\nbuildscript {");
+  } else {
+    content = 'import org.gradle.util.VersionNumber\n' + content;
+  }
+}
+
 // Le code d'origine qu'on veut remplacer
 const oldCode = `  if (VersionNumber.parse(REACT_NATIVE_VERSION) < VersionNumber.parse("0.71")) {
     extractLibs "com.facebook.fbjni:fbjni:+:headers"
