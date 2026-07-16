@@ -1,8 +1,17 @@
-REMOVED: This patch file was intentionally removed because it was corrupted and caused patch-package to fail in CI.
-
-The fix for onnxruntime-react-native is now applied at install-time by the scripts in /scripts:
-
-- scripts/prepatch.js: removes the broken patch file (if present) before running patch-package.
-- scripts/fix-onnx.js: applies the required edit directly to node_modules/onnxruntime-react-native/android/build.gradle at postinstall.
-
-Keeping this placeholder file (instead of the original .patch) documents the reason and ensures historical traceability.
+diff --git a/node_modules/onnxruntime-react-native/android/build.gradle b/node_modules/onnxruntime-react-native/android/build.gradle
+index 41b4359..8779732 100644
+--- a/node_modules/onnxruntime-react-native/android/build.gradle
++++ b/node_modules/onnxruntime-react-native/android/build.gradle
+@@ -247,10 +247,8 @@ dependencies {
+     extractLibs "com.microsoft.onnxruntime:onnxruntime-android:latest.integration@aar"
+   }
+ 
+-  if (VersionNumber.parse(REACT_NATIVE_VERSION) < VersionNumber.parse("0.71")) {
+-    extractLibs "com.facebook.fbjni:fbjni:+:headers"
+-    extractLibs "com.facebook.fbjni:fbjni:+"
+-  }
++  extractLibs "com.facebook.fbjni:fbjni:+:headers"
++  extractLibs "com.facebook.fbjni:fbjni:+"
+ 
+   // By default it will just include onnxruntime full aar package
+   if (ortExtensionsEnabled) {
