@@ -6,12 +6,13 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-    Camera,
-    useCameraDevice,
-    useCameraPermission,
-    useFrameProcessor,
+  Camera,
+  useCameraDevice,
+  useCameraPermission,
+  useFrameProcessor,
 } from 'react-native-vision-camera';
-import { useResizePlugin } from 'vision-camera-resize-plugin';
+// vision-camera-resize-plugin is temporarily disabled (incompatible with VisionCamera v5)
+// import { useResizePlugin } from 'vision-camera-resize-plugin';
 
 const MODEL_SIZE = 640;
 const INFERENCE_INTERVAL_MS = 700; // throttle : pas d'inférence à chaque frame, sinon ça sature
@@ -22,7 +23,7 @@ export default function CameraScreen() {
   const [detections, setDetections] = useState<Detection[]>([]);
   const [status, setStatus] = useState('Initialisation...');
   const device = useCameraDevice('back');
-  const { resize } = useResizePlugin();
+  // const { resize } = useResizePlugin();
 
   const lastInferenceTime = useRef(0);
   const isInferencingRef = useRef(false);
@@ -62,16 +63,16 @@ export default function CameraScreen() {
       if (now - lastInferenceTime.current < INFERENCE_INTERVAL_MS) return;
       lastInferenceTime.current = now;
 
-      // Redimensionne le frame en 640x640 RGB directement en mémoire native (rapide, pas de JPEG)
-      const resized = resize(frame, {
-        scale: { width: MODEL_SIZE, height: MODEL_SIZE },
-        pixelFormat: 'rgb',
-        dataType: 'float32',
-      });
-
-      runOnJS(handleResizedFrame)(resized);
+      // vision-camera-resize-plugin disabled: skipping native resize + inference
+      // Redimensionnement et appel d'inférence désactivés temporairement
+      // const resized = resize(frame, {
+      //   scale: { width: MODEL_SIZE, height: MODEL_SIZE },
+      //   pixelFormat: 'rgb',
+      //   dataType: 'float32',
+      // });
+      // runOnJS(handleResizedFrame)(resized);
     },
-    [resize]
+    []
   );
 
   if (device == null || hasPermission === undefined) {
