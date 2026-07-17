@@ -58,11 +58,11 @@ export default function HomeScreen() {
         </ThemedView>
 
         {Platform.OS === 'web' && <WebBadge />}
-        <Pressable style={styles.cameraButton}>
-          <Link href="/camera">
+        <Link href="/camera" asChild>
+          <Pressable style={styles.cameraButton}>
             <Text style={styles.cameraButtonText}>Ouvrir la caméra</Text>
-          </Link>
-        </Pressable>
+          </Pressable>
+        </Link>
       </SafeAreaView>
     </ThemedView>
   );
